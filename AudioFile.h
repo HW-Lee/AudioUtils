@@ -7,6 +7,7 @@
 
 enum
 {
+    DATA_TYPE_UNSUPPORTED,
     DATA_TYPE_8,
     DATA_TYPE_16,
     DATA_TYPE_32
@@ -21,6 +22,14 @@ enum
     ELOAD_UNSUPPORTED_DATAHEADER
 };
 
+typedef struct
+{
+    void* raw_data;
+    void** data;
+    uint16_t data_type;
+    uint32_t data_size;
+} samples;
+
 class WavFile
 {
 public:
@@ -28,7 +37,7 @@ public:
     ~WavFile();
 
     bool         is_ok() { return this->is_loaded; }
-    uint16_t     getLoadedErrorCode() { return (uint16_t) this->load_error_code; }
+    uint16_t     getLoadedErrorCode() { return this->load_error_code; }
     std::string  chunkDescription() { return this->chunkdesc; }
     uint32_t     chunkSize() { return this->chunksize; }
     std::string  format() { return this->fmt; }
@@ -42,6 +51,9 @@ public:
     uint16_t     bitPerSample() { return this->bit_per_sample; }
     std::string  dataHeader() { return this->data_hdr; }
     uint32_t     dataSubchunkSize() { return this->data_subchunksize; }
+    void**       data() { return this->wavdata.data; }
+    uint16_t     dataType() { return this->wavdata.data_type; }
+    uint32_t     dataSize() { return this->wavdata.data_size; }
 
 private:
     std::string  chunkdesc;
@@ -57,9 +69,10 @@ private:
     uint16_t     bit_per_sample;
     std::string  data_hdr;
     uint32_t     data_subchunksize;
+    samples      wavdata;
 
     bool         is_loaded;
-    uint8_t      load_error_code;
+    uint16_t     load_error_code;
 };
 
 #endif
