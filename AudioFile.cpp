@@ -6,23 +6,6 @@
 #include <fstream>
 #include <stdlib.h>
 
-template<class T>
-T readBytesLittleEndian(std::ifstream &ifs, int N)
-{
-    T v = 0;
-    for (int i = 0; i < sizeof(T); i++) {
-        if (i < N) {
-            uint8_t byte;
-            ifs.read((char*) &byte, 1);
-            v |= (byte << (sizeof(T)-1)*8);
-        }
-        if (i < sizeof(T)-1)
-            v >>= 8;
-    }
-
-    return v;
-}
-
 void initSamples(samples* s, uint16_t num_ch, uint32_t data_len)
 {
     s->raw_data = (void*) malloc(num_ch * data_len);
@@ -46,8 +29,8 @@ WavFile::WavFile(char* fpath)
         this->load_error_code = ELOAD_WRONG_CHUNKDESC;
         goto end;
     }
-    
-    this->chunksize = readBytesLittleEndian<uint32_t>(audiofile, 4);
+
+    audiofile.read((char*) &this->chunksize, 4);
     
     audiofile.read(s, 4);
     this->fmt = std::string(s);
@@ -63,13 +46,13 @@ WavFile::WavFile(char* fpath)
         goto end;
     }
 
-    this->fmt_subchunksize = readBytesLittleEndian<uint32_t>(audiofile, 4);
-    this->audiofmt = readBytesLittleEndian<uint16_t>(audiofile, 2);
-    this->num_ch = readBytesLittleEndian<uint16_t>(audiofile, 2);
-    this->sample_rate = readBytesLittleEndian<uint32_t>(audiofile, 4);
-    this->byte_rate = readBytesLittleEndian<uint32_t>(audiofile, 4);
-    this->block_align = readBytesLittleEndian<uint16_t>(audiofile, 2);
-    this->bit_per_sample = readBytesLittleEndian<uint16_t>(audiofile, 2);
+    audiofile.read((char*) &this->fmt_subchunksize, 4);
+    audiofile.read((char*) &this->audiofmt,         2);
+    audiofile.read((char*) &this->num_ch,           2);
+    audiofile.read((char*) &this->sample_rate,      4);
+    audiofile.read((char*) &this->byte_rate,        4);
+    audiofile.read((char*) &this->block_align,      2);
+    audiofile.read((char*) &this->bit_per_sample,   2);
 
     audiofile.read(s, 4);
     this->data_hdr = std::string(s);
@@ -78,7 +61,7 @@ WavFile::WavFile(char* fpath)
         goto end;
     }
 
-    this->data_subchunksize = readBytesLittleEndian<uint32_t>(audiofile, 4);
+    audiofile.read((char*) &this->data_subchunksize, 4);
     initSamples(&this->wavdata, this->num_ch, this->data_subchunksize/this->num_ch);
 
     if (this->bit_per_sample == 8) {
@@ -87,7 +70,7 @@ WavFile::WavFile(char* fpath)
         uint8_t** data = (uint8_t**) this->wavdata.data;
         for (int i = 0; i < this->wavdata.data_size; i++) {
             for (int j = 0; j < this->num_ch; j++) {
-                data[j][i] = readBytesLittleEndian<uint8_t>(audiofile, 1);
+                audiofile.read((char*) &data[j][i], 1);
             }
         }
     } else if (this->bit_per_sample == 16) {
@@ -96,7 +79,7 @@ WavFile::WavFile(char* fpath)
         uint16_t** data = (uint16_t**) this->wavdata.data;
         for (int i = 0; i < this->wavdata.data_size; i++) {
             for (int j = 0; j < this->num_ch; j++) {
-                data[j][i] = readBytesLittleEndian<uint16_t>(audiofile, 2);
+                audiofile.read((char*) &data[j][i], 2);
             }
         }
     } else if (this->bit_per_sample == 32) {
@@ -105,7 +88,7 @@ WavFile::WavFile(char* fpath)
         uint32_t** data = (uint32_t**) this->wavdata.data;
         for (int i = 0; i < this->wavdata.data_size; i++) {
             for (int j = 0; j < this->num_ch; j++) {
-                data[j][i] = readBytesLittleEndian<uint32_t>(audiofile, 4);
+                audiofile.read((char*) &data[j][i], 4);
             }
         }
     }
