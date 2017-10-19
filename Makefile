@@ -26,4 +26,4 @@ directories:
 	$(MKDIR) $(BINDIR) $(OBJDIR)
 
 clean:
-	rm -rf $(OBJDIR)/*
+	rm -rf $(OBJDIR) $(BINDIR)
