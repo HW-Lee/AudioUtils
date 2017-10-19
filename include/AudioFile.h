@@ -1,7 +1,6 @@
 #ifndef __AUDIO_FILE_H__
 #define __AUDIO_FILE_H__
 
-#include <iostream>
 #include <string>
 #include <stdint.h>
 

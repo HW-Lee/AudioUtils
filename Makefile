@@ -1,8 +1,29 @@
-all: main.o AudioFile.o
-	g++ -o main.o main.cpp AudioFile.o
+CC = g++
+MKDIR = mkdir -p
+EXE = main
 
-AudioFile.o: AudioFile.cpp AudioFile.h
-	g++ -c AudioFile.cpp
+SRCDIR = src
+HDRDIR = include
+BINDIR = bin
+OBJDIR = obj
+
+SOURCES := $(wildcard $(SRCDIR)/*.cpp)
+INCLUDES := $(wildcard $(HDRDIR)/*.h)
+OBJECTS := $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+
+CPPFLAGS += -I$(HDRDIR)
+CFLAGS += -Wall
+
+all: directories $(EXE)
+
+$(EXE): $(OBJECTS)
+	$(CC) $(CPPFLAGS) main.cpp $^ -o $@
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+directories:
+	$(MKDIR) $(BINDIR) $(OBJDIR)
 
 clean:
-	rm -rf *.o
+	rm -rf $(OBJDIR)/*

@@ -76,8 +76,8 @@ WavFile::WavFile(char* fpath)
         this->wavdata.data_type = DATA_TYPE_8;
         this->wavdata.data_size = this->data_subchunksize/this->num_ch;
         uint8_t** data = (uint8_t**) this->wavdata.data;
-        for (int i = 0; i < this->wavdata.data_size; i++) {
-            for (int j = 0; j < this->num_ch; j++) {
+        for (uint32_t i = 0; i < this->wavdata.data_size; i++) {
+            for (uint32_t j = 0; j < this->num_ch; j++) {
                 audiofile.read((char*) &data[j][i], 1);
             }
         }
@@ -85,8 +85,8 @@ WavFile::WavFile(char* fpath)
         this->wavdata.data_type = DATA_TYPE_16;
         this->wavdata.data_size = this->data_subchunksize/this->num_ch/2;
         uint16_t** data = (uint16_t**) this->wavdata.data;
-        for (int i = 0; i < this->wavdata.data_size; i++) {
-            for (int j = 0; j < this->num_ch; j++) {
+        for (uint32_t i = 0; i < this->wavdata.data_size; i++) {
+            for (uint32_t j = 0; j < this->num_ch; j++) {
                 audiofile.read((char*) &data[j][i], 2);
             }
         }
@@ -94,8 +94,8 @@ WavFile::WavFile(char* fpath)
         this->wavdata.data_type = DATA_TYPE_32;
         this->wavdata.data_size = this->data_subchunksize/this->num_ch/4;
         uint32_t** data = (uint32_t**) this->wavdata.data;
-        for (int i = 0; i < this->wavdata.data_size; i++) {
-            for (int j = 0; j < this->num_ch; j++) {
+        for (uint32_t i = 0; i < this->wavdata.data_size; i++) {
+            for (uint32_t j = 0; j < this->num_ch; j++) {
                 audiofile.read((char*) &data[j][i], 4);
             }
         }
