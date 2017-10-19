@@ -16,6 +16,8 @@ void initSamples(samples* s, uint16_t num_ch, uint32_t data_len)
 
 WavFile::WavFile(char* fpath)
 {
+    char s[5] = {0};
+
     this->is_loaded = false;
     this->load_error_code = ELOAD_NONE;
     this->wavdata.raw_data = NULL;
@@ -24,7 +26,10 @@ WavFile::WavFile(char* fpath)
     this->wavdata.data_size = 0;
 
     std::ifstream audiofile(fpath, std::ios::binary);
-    char s[5] = {0};
+    if (!audiofile.good()) {
+        this->load_error_code = ELOAD_FILE_NOT_FOUND;
+        goto end;
+    }
     
     audiofile.read(s, 4);
     this->chunkdesc = std::string(s);

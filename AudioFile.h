@@ -16,11 +16,22 @@ enum
 enum
 {
     ELOAD_NONE,
+    ELOAD_FILE_NOT_FOUND,
     ELOAD_WRONG_CHUNKDESC,
     ELOAD_WRONG_FORMAT,
     ELOAD_WRONG_FORMATHEADER,
     ELOAD_UNSUPPORTED_DATAHEADER,
     ELOAD_UNSUPPORTED_DATATYPE
+};
+
+static const char* ERROR_MSGS[] = {
+    [ELOAD_NONE]                   = "none",
+    [ELOAD_FILE_NOT_FOUND]         = "input file not found",
+    [ELOAD_WRONG_CHUNKDESC]        = "the chunk description is not \"RIFF\"",
+    [ELOAD_WRONG_FORMAT]           = "the format is not \"WAVE\"",
+    [ELOAD_WRONG_FORMATHEADER]     = "the format is not \"fmt \"",
+    [ELOAD_UNSUPPORTED_DATAHEADER] = "the data chunk does not start with \"data\"",
+    [ELOAD_UNSUPPORTED_DATATYPE]   = "the data size is not 8/16/32-bit"
 };
 
 typedef struct
@@ -38,6 +49,8 @@ public:
     ~WavFile();
 
     bool         is_ok() { return this->is_loaded; }
+    std::string  getErrorMsg() { return std::string(ERROR_MSGS[this->load_error_code]); }
+
     uint16_t     getLoadedErrorCode() { return this->load_error_code; }
     std::string  chunkDescription() { return this->chunkdesc; }
     uint32_t     chunkSize() { return this->chunksize; }
