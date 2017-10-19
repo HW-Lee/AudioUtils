@@ -20,6 +20,8 @@ int main(int argc, char* argv[])
         std::cout << "data_header: " << "\"" << wavfile.dataHeader() << "\"" << std::endl;
         std::cout << "data_subchunksize: " << wavfile.dataSubchunkSize() << std::endl;
         std::cout << "duration: " << (float) wavfile.dataSubchunkSize() / wavfile.byteRate() << std::endl;
+    } else {
+        std::cout << "WavFile failed to load, error " << wavfile.getLoadedErrorCode() << std::endl;
     }
     return 0;
 }

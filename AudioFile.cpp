@@ -25,26 +25,33 @@ T readBytesLittleEndian(std::ifstream &ifs)
 WavFile::WavFile(char* fpath)
 {
     this->is_loaded = false;
+    this->load_error_code = ELOAD_NONE;
 
     std::ifstream audiofile(fpath, std::ios::binary);
     char s[5] = {0};
     
     audiofile.read(s, 4);
     this->chunkdesc = std::string(s);
-    if (this->chunkdesc != "RIFF")
+    if (this->chunkdesc != "RIFF") {
+        this->load_error_code = ELOAD_WRONG_CHUNKDESC;
         goto end;
+    }
     
     this->chunksize = readBytesLittleEndian<uint32_t, 4>(audiofile);
     
     audiofile.read(s, 4);
     this->fmt = std::string(s);
-    if (this->fmt != "WAVE")
+    if (this->fmt != "WAVE") {
+        this->load_error_code = ELOAD_WRONG_FORMAT;
         goto end;
+    }
     
     audiofile.read(s, 4);
     this->fmt_hdr = std::string(s);
-    if (this->fmt_hdr != "fmt ")
+    if (this->fmt_hdr != "fmt ") {
+        this->load_error_code = ELOAD_WRONG_FORMATHEADER;
         goto end;
+    }
 
     this->fmt_subchunksize = readBytesLittleEndian<uint32_t, 4>(audiofile);
     this->audiofmt = readBytesLittleEndian<uint16_t, 2>(audiofile);
@@ -56,8 +63,10 @@ WavFile::WavFile(char* fpath)
 
     audiofile.read(s, 4);
     this->data_hdr = std::string(s);
-    if (this->data_hdr != "data")
+    if (this->data_hdr != "data") {
+        this->load_error_code = ELOAD_UNSUPPORTED_DATAHEADER;
         goto end;
+    }
 
     this->data_subchunksize = readBytesLittleEndian<uint32_t, 4>(audiofile);
 

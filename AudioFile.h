@@ -12,6 +12,15 @@ enum
     DATA_TYPE_32
 };
 
+enum
+{
+    ELOAD_NONE,
+    ELOAD_WRONG_CHUNKDESC,
+    ELOAD_WRONG_FORMAT,
+    ELOAD_WRONG_FORMATHEADER,
+    ELOAD_UNSUPPORTED_DATAHEADER
+};
+
 class WavFile
 {
 public:
@@ -19,6 +28,7 @@ public:
     ~WavFile();
 
     bool         is_ok() { return this->is_loaded; }
+    uint16_t     getLoadedErrorCode() { return (uint16_t) this->load_error_code; }
     std::string  chunkDescription() { return this->chunkdesc; }
     uint32_t     chunkSize() { return this->chunksize; }
     std::string  format() { return this->fmt; }
@@ -49,6 +59,7 @@ private:
     uint32_t     data_subchunksize;
 
     bool         is_loaded;
+    uint8_t      load_error_code;
 };
 
 #endif
