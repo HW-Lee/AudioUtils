@@ -18,7 +18,10 @@ WavFile::WavFile(char* fpath)
 {
     this->is_loaded = false;
     this->load_error_code = ELOAD_NONE;
+    this->wavdata.raw_data = NULL;
+    this->wavdata.data = NULL;
     this->wavdata.data_type = DATA_TYPE_UNSUPPORTED;
+    this->wavdata.data_size = 0;
 
     std::ifstream audiofile(fpath, std::ios::binary);
     char s[5] = {0};
@@ -91,6 +94,9 @@ WavFile::WavFile(char* fpath)
                 audiofile.read((char*) &data[j][i], 4);
             }
         }
+    } else {
+        this->load_error_code = ELOAD_UNSUPPORTED_DATATYPE;
+        goto end;
     }
 
     this->is_loaded = true;
@@ -101,10 +107,10 @@ end:
 
 WavFile::~WavFile()
 {
-    if (this->is_loaded) {
+    if (!this->wavdata.raw_data)
         free(this->wavdata.raw_data);
+    if (!this->wavdata.data)
         free(this->wavdata.data);
-    }
 }
 
 #endif
