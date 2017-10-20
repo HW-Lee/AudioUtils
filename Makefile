@@ -1,12 +1,12 @@
 CC = g++
 MKDIR = mkdir -p
-EXE := main
+TARGET = main
 
 SRCDIR = src
 HDRDIR = include
 BINDIR = bin
 OBJDIR = obj
-EXE := $(BINDIR)/$(EXE)
+EXE := $(BINDIR)/$(TARGET)
 
 SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 INCLUDES := $(wildcard $(HDRDIR)/*.h)
@@ -18,7 +18,7 @@ CFLAGS += -Wall
 all: directories $(EXE)
 
 $(EXE): $(OBJECTS)
-	$(CC) $(CPPFLAGS) main.cpp $^ -o $@
+	$(CC) $(CPPFLAGS) $(TARGET).cpp $^ -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
