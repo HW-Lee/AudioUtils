@@ -1,11 +1,12 @@
 CC = g++
 MKDIR = mkdir -p
-EXE = main
+EXE := main
 
 SRCDIR = src
 HDRDIR = include
 BINDIR = bin
 OBJDIR = obj
+EXE := $(BINDIR)/$(EXE)
 
 SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 INCLUDES := $(wildcard $(HDRDIR)/*.h)
