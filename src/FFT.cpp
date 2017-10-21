@@ -28,7 +28,7 @@ std::vector<complexdbl> getTwiddleFactors(uint32_t N)
     std::vector<complexdbl> twiddle_factors(N);
     for (uint32_t i = 0; i < N; i++) {
         double radius = (double) i/N * 2 * M_PI;
-        twiddle_factors[i] = complexdbl(cos(radius), sin(radius));
+        twiddle_factors[i] = complexdbl(cos(radius), -sin(radius));
     }
 
     return twiddle_factors;
@@ -50,13 +50,12 @@ std::vector<complexdbl> internal_FFT(std::vector<complexdbl> data, std::vector<c
     std::vector<complexdbl> *temp_ptr;
     uint32_t N = data.size();
     uint32_t twiddle_step = N;
-    std::vector<complexdbl> twiddle_factors = getTwiddleFactors(N);
 
     while (twiddle_step >>= 1) {
         for (uint32_t offset = 0; offset < N; offset+=(N/twiddle_step)) {
             for (uint32_t i = 0; i < (N/twiddle_step/2); i++) {
-                complexdbl W = twiddle_factors[i*twiddle_step];
-                omplexdbl f_even = (*input)[offset+i] * UNITARY_FACTOR;
+                complexdbl W = twiddle[i*twiddle_step];
+                complexdbl f_even = (*input)[offset+i] * UNITARY_FACTOR;
                 complexdbl f_odd = (*input)[offset+i+N/twiddle_step/2] * UNITARY_FACTOR;
                 (*output)[offset+i] = f_even + W * f_odd;
                 (*output)[offset+i+N/twiddle_step/2] = f_even - W * f_odd;
