@@ -5,22 +5,22 @@
 
 void bitReversalSwap(std::vector<complexdbl>& data)
 {
-	uint32_t i_br = 0;
-	uint32_t N = data.size();
-	for (uint32_t i = 1; i < N-1; i++) {
-		uint32_t k = N >> 1;
-		while (k & i_br) {
-			i_br &= ~k;
-			k >>= 1;
-		}
-		i_br |= k;
+    uint32_t i_br = 0;
+    uint32_t N = data.size();
+    for (uint32_t i = 1; i < N-1; i++) {
+        uint32_t k = N >> 1;
+        while (k & i_br) {
+            i_br &= ~k;
+            k >>= 1;
+        }
+        i_br |= k;
 
-		if (i < i_br) {
-			complexdbl temp = data[i];
-			data[i] = data[i_br];
-			data[i_br] = temp;
-		}
-	}
+        if (i < i_br) {
+            complexdbl temp = data[i];
+            data[i] = data[i_br];
+            data[i_br] = temp;
+        }
+    }
 }
 
 std::vector<complexdbl> getTwiddleFactors(uint32_t N)
@@ -36,37 +36,39 @@ std::vector<complexdbl> getTwiddleFactors(uint32_t N)
 
 uint32_t ceilpw2(uint32_t k)
 {
-	uint32_t N = 1;
-	while (N < k) N <<= 1;
-	return N;
+    uint32_t N = 1;
+    while (N < k) N <<= 1;
+    return N;
 }
 
 std::vector<complexdbl> internal_FFT(std::vector<complexdbl> data, std::vector<complexdbl> twiddle)
 {
-	std::vector<complexdbl> buf1(data);
-	std::vector<complexdbl> buf2(data.size());
-	std::vector<complexdbl> *input = &buf1;
-	std::vector<complexdbl> *output = &buf2;
-	std::vector<complexdbl> *temp_ptr;
-	uint32_t N = data.size();
-	uint32_t twiddle_step = N;
-	std::vector<complexdbl> twiddle_factors = getTwiddleFactors(N);
+    std::vector<complexdbl> buf1(data);
+    std::vector<complexdbl> buf2(data.size());
+    std::vector<complexdbl> *input = &buf1;
+    std::vector<complexdbl> *output = &buf2;
+    std::vector<complexdbl> *temp_ptr;
+    uint32_t N = data.size();
+    uint32_t twiddle_step = N;
+    std::vector<complexdbl> twiddle_factors = getTwiddleFactors(N);
 
-	while (twiddle_step >>= 1) {
-		for (uint32_t offset = 0; offset < N; offset+=(N/twiddle_step)) {
-			for (uint32_t i = 0; i < (N/twiddle_step/2); i++) {
-				complexdbl W = twiddle_factors[i*twiddle_step];
-				(*output)[offset+i] = (*input)[offset+i] + W * (*input)[offset+i+N/twiddle_step/2];
-				(*output)[offset+i+N/twiddle_step/2] = (*input)[offset+i] - W * (*input)[offset+i+N/twiddle_step/2];
-			}
-		}
+    while (twiddle_step >>= 1) {
+        for (uint32_t offset = 0; offset < N; offset+=(N/twiddle_step)) {
+            for (uint32_t i = 0; i < (N/twiddle_step/2); i++) {
+                complexdbl W = twiddle_factors[i*twiddle_step];
+                omplexdbl f_even = (*input)[offset+i] * UNITARY_FACTOR;
+                complexdbl f_odd = (*input)[offset+i+N/twiddle_step/2] * UNITARY_FACTOR;
+                (*output)[offset+i] = f_even + W * f_odd;
+                (*output)[offset+i+N/twiddle_step/2] = f_even - W * f_odd;
+            }
+        }
 
-		temp_ptr = input;
-		input = output;
-		output = temp_ptr;
-	}
+        temp_ptr = input;
+        input = output;
+        output = temp_ptr;
+    }
 
-	return *input;
+    return *input;
 }
 
 #endif

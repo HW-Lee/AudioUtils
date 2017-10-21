@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "AudioFile.h"
+#include "FFT.h"
 
 int main(int argc, char* argv[])
 {
@@ -25,5 +26,6 @@ int main(int argc, char* argv[])
     } else {
         std::cout << "WavFile failed to load, error " << wavfile.getLoadedErrorCode() << "(" << wavfile.getErrorMsg() << ")" << std::endl;
     }
+
     return 0;
 }
