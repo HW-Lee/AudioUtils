@@ -12,7 +12,7 @@ SOURCES := $(wildcard $(SRCDIR)/*.cpp)
 INCLUDES := $(wildcard $(HDRDIR)/*.h)
 OBJECTS := $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
-CPPFLAGS += -I$(HDRDIR)
+CPPFLAGS += -I$(HDRDIR) -std=c++11
 CFLAGS += -Wall
 
 all: directories $(EXE)
