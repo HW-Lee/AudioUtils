@@ -18,4 +18,9 @@ std::vector<double> QuadraticFitter::fit(Point2D<double> p1, Point2D<double> p2,
     return coeffs;
 }
 
+Point2D<double> QuadraticFitter::peak(std::vector<double> coeffs)
+{
+    return Point2D<double>(-0.5*coeffs[1]/coeffs[2], coeffs[0]-0.25*coeffs[1]*coeffs[1]/coeffs[2]);
+}
+
 #endif
