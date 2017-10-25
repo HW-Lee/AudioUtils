@@ -24,13 +24,13 @@ enum
 };
 
 static const char* ERROR_MSGS[] = {
-    [ELOAD_NONE]                   = "none",
+    [ELOAD_NONE]                   = "no error",
     [ELOAD_FILE_NOT_FOUND]         = "input file not found",
     [ELOAD_WRONG_CHUNKDESC]        = "the chunk description is not \"RIFF\"",
     [ELOAD_WRONG_FORMAT]           = "the format is not \"WAVE\"",
-    [ELOAD_WRONG_FORMATHEADER]     = "the format is not \"fmt \"",
+    [ELOAD_WRONG_FORMATHEADER]     = "the format chunk does not start with \"fmt \"",
     [ELOAD_UNSUPPORTED_DATAHEADER] = "the data chunk does not start with \"data\"",
-    [ELOAD_UNSUPPORTED_DATATYPE]   = "the data size is not 8/16/32-bit"
+    [ELOAD_UNSUPPORTED_DATATYPE]   = "the data resolution is not 8/16/32-bit"
 };
 
 typedef struct
